@@ -20,7 +20,7 @@ public class UserService {
 
     @CacheEvict(value = "cache", allEntries = true)
     @Scheduled(fixedDelayString = "${caching.spring.userListTTL}", initialDelay = 10000)
-    public void deleteUserList() {
+    public void deleteUserList()  {
         LOG.info("Evict User List");
     }
 }
