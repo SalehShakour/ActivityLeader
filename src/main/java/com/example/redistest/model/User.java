@@ -26,7 +26,7 @@ public class User implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "username")
@@ -40,6 +40,7 @@ public class User implements UserDetails {
     private List<Activity> activities;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id")
     private Set<Role> roles = new HashSet<>();
 
     @Override

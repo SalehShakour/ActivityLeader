@@ -1,7 +1,8 @@
-package com.example.redistest.jwt;
+package com.example.redistest.filter;
 
 
 import com.example.redistest.exception.UserNotFoundException;
+import com.example.redistest.jwt.JwtService;
 import com.example.redistest.model.User;
 import com.example.redistest.repository.UserRepository;
 import com.example.redistest.service.RateLimiter;
@@ -12,6 +13,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,37 +28,17 @@ import java.io.IOException;
 import java.util.Base64;
 
 @Component
+@AllArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final RateLimiter rateLimiter;
 
-    public JwtTokenFilter(JwtService jwtUtil, UserRepository userRepository, RateLimiter rateLimiter) {
-        this.jwtService = jwtUtil;
-        this.userRepository = userRepository;
-        this.rateLimiter = rateLimiter;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-
-
-        String tenantId = request.getParameter("username"); //todo
-        String encodedString = Base64.getEncoder().encodeToString(tenantId.getBytes());
-        if (StringUtils.isNotBlank(encodedString)) {
-            Bucket bucket = rateLimiter.resolveBucket(encodedString);
-            if (bucket.tryConsume(1)) {
-                filterChain.doFilter(request, response);
-            } else {
-                sendErrorResponse(response, HttpStatus.TOO_MANY_REQUESTS.value());
-            }
-        } else {
-            sendErrorResponse(response, HttpStatus.FORBIDDEN.value());
-        }
-
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         if (!hasAuthorizationBearer(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -70,7 +52,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         setAuthenticationContext(token, request);
-
 
     }
 
@@ -108,8 +89,4 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return userDetails;
     }
 
-    private void sendErrorResponse(HttpServletResponse response, int value) {
-        response.setStatus(value);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    }
 }
