@@ -5,17 +5,12 @@ import com.example.redistest.exception.UserNotFoundException;
 import com.example.redistest.jwt.JwtService;
 import com.example.redistest.model.User;
 import com.example.redistest.repository.UserRepository;
-import com.example.redistest.service.RateLimiter;
-import io.github.bucket4j.Bucket;
 import io.jsonwebtoken.Claims;
-import io.micrometer.core.instrument.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +20,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Base64;
 
 @Component
 @AllArgsConstructor
