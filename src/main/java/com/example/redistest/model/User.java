@@ -35,9 +35,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "activities")
-    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
-    private List<Activity> activities;
+    private int activities = 0;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
