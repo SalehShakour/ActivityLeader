@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
-public class RedisTestApplication {
+public class RateLimitApplication {
     public static void main(String[] args) {
-        SpringApplication.run(RedisTestApplication.class, args);
+        SpringApplication.run(RateLimitApplication.class, args);
     }
 }
